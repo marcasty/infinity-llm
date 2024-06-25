@@ -1,6 +1,7 @@
 from typing import Dict, Union, NamedTuple
 from collections import namedtuple
 from enum import Enum
+import os
 
 class Provider(Enum):
     OPENAI = "openai"
@@ -73,7 +74,7 @@ model_mapping: Dict[str, ModelSpec] = {
     "mistral-medium-latest": ModelSpec(Provider.MISTRAL, 32768, ChatUsage(2.7*1e-6, 8.1*1e-6), MistralRateLimit(500000, 1000000000)),
     "mistral-large-latest": ModelSpec(Provider.MISTRAL, 32768, ChatUsage(4*1e-6, 12*1e-6), MistralRateLimit(500000, 1000000000)),
     "mistral-embed": ModelSpec(Provider.MISTRAL, 8192, EmbedUsage(0.1*1e-6), MistralRateLimit(500000, 1000000000)),
-    "codestral-2405": ModelSpec(Provider.MISTRAL, 32768, ChatUsage(1*1e-6, 3*1e-6), MistralRateLimit(500000, 1000000000)),
+    # "codestral-2405": ModelSpec(Provider.MISTRAL, 32768, ChatUsage(1*1e-6, 3*1e-6), MistralRateLimit(500000, 1000000000)),
     # anthropic
     "claude-3-opus-20240229": ModelSpec(Provider.ANTHROPIC, 200000, ChatUsage(15*1e-6, 75*1e-6), AnthropicRateLimit(4000, 400000, 10000000)),
     "claude-3-sonnet-20240229": ModelSpec(Provider.ANTHROPIC, 200000, ChatUsage(3*1e-6, 15*1e-6), AnthropicRateLimit(4000, 400000, 50000000)),
@@ -114,3 +115,22 @@ model_mapping: Dict[str, ModelSpec] = {
     "rerank-1": ModelSpec(Provider.VOYAGE, 8000, CohereRerankUsage(0.05*1e-6), RateLimit(100, 2000000)),
     "rerank-lite-1": ModelSpec(Provider.VOYAGE, 4000, CohereRerankUsage(0.02*1e-6), RateLimit(100, 2000000)),
 }
+
+
+def get_api_key(provider: Provider):
+    """
+    Fetches the API key for a given model provider
+    """
+    model_to_api_key = {
+        Provider.OPENAI: os.getenv("OPENAI_API_KEY"),
+        Provider.ANTHROPIC: os.getenv("ANTHROPIC_API_KEY"),
+        Provider.ANYSCALE: os.getenv("ANYSCALE_API_KEY"),
+        Provider.COHERE: os.getenv("COHERE_API_KEY"),
+        Provider.VOYAGE: os.getenv("VOYAGE_API_KEY"),
+        Provider.GROQ: os.getenv("GROQ_API_KEY"),
+        Provider.MISTRAL: os.getenv("MISTRAL_API_KEY"),
+    }
+    assert (
+        provider in model_to_api_key
+    ), f"Provider '{provider}' is not recognized."
+    return model_to_api_key[provider]

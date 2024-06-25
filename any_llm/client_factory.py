@@ -1,4 +1,3 @@
-import os
 from typing import Optional, Union
 import instructor
 from instructor import Mode, Instructor, AsyncInstructor
@@ -12,7 +11,7 @@ from mistralai.client import MistralClient
 from mistralai.async_client import MistralAsyncClient
 
 
-from any_llm import model_mapping, Provider
+from any_llm import model_mapping, Provider, get_api_key
 
 
 def get_default_mode(provider: Provider) -> Mode:
@@ -29,25 +28,6 @@ def get_default_mode(provider: Provider) -> Mode:
     }
     assert provider in org_to_mode, f"Provider '{provider.value}' is not recognized."
     return org_to_mode[provider]
-
-
-def get_api_key(provider: Provider):
-    """
-    Fetches the API key for a given model provider
-    """
-    model_to_api_key = {
-        Provider.OPENAI: os.getenv("OPENAI_API_KEY"),
-        Provider.ANTHROPIC: os.getenv("ANTHROPIC_API_KEY"),
-        Provider.ANYSCALE: os.getenv("ANYSCALE_API_KEY"),
-        Provider.COHERE: os.getenv("COHERE_API_KEY"),
-        Provider.VOYAGE: os.getenv("VOYAGE_API_KEY"),
-        Provider.GROQ: os.getenv("GROQ_API_KEY"),
-        Provider.MISTRAL: os.getenv("MISTRAL_API_KEY"),
-    }
-    assert (
-        provider in model_to_api_key
-    ), f"Provider '{provider}' is not recognized."
-    return model_to_api_key[provider]
 
 
 # TODO: gemini, together, ollama, llamacpp
