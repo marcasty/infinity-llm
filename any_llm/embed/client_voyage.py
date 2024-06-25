@@ -17,19 +17,19 @@ def create_voyage_wrapper(embed_func):
     return wrapper
 
 @overload
-def from_voyage(
+def embed_from_voyage(
     client: voyageai.Client,
     **kwargs: Any,
 ) -> any_llm.AnyEmbedder: ...
 
 
 @overload
-def from_voyage(
+def embed_from_voyage(
     client: voyageai.AsyncClient,
     **kwargs: Any,
 ) -> any_llm.AsyncAnyEmbedder: ...
 
-def from_voyage(
+def embed_from_voyage(
     client: voyageai.Client | voyageai.AsyncClient,
     **kwargs: Any,
 ) -> any_llm.AnyEmbedder | any_llm.AsyncAnyEmbedder:

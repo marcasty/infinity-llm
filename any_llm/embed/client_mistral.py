@@ -8,19 +8,20 @@ import any_llm
 from typing import overload, Any
 
 @overload
-def from_mistral(
+def embed_from_mistral(
     client: mistralai.client.MistralClient,
     **kwargs: Any,
 ) -> any_llm.AnyEmbedder: ...
 
 
 @overload
-def from_mistral(
+def embed_from_mistral(
     client: mistralaiasynccli.MistralAsyncClient,
     **kwargs: Any,
 ) -> any_llm.AsyncAnyEmbedder: ...
 
-def from_mistral(
+
+def embed_from_mistral(
     client: mistralai.client.MistralClient | mistralaiasynccli.MistralAsyncClient,
     **kwargs: Any,
 ) -> any_llm.AnyEmbedder | any_llm.AsyncAnyEmbedder:

@@ -22,19 +22,19 @@ def create_cohere_wrapper(embed_func: Callable):
     return wrapper
 
 @overload
-def from_cohere(
+def embed_from_cohere(
     client: cohere.Client,
     **kwargs: Any,
 ) -> any_llm.AnyEmbedder: ...
 
 @overload
-def from_cohere(
+def embed_from_cohere(
     client: cohere.AsyncClient,
     **kwargs: Any,
 ) -> any_llm.AsyncAnyEmbedder: ...
 
 
-def from_cohere(
+def embed_from_cohere(
     client: cohere.Client | cohere.AsyncClient,
     **kwargs: Any,
 ):
