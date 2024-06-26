@@ -25,11 +25,9 @@ client = from_any(provider=Provider.OPENAI, model_name="gpt-4o", async_client=Fa
 
 2. Choose between a/sync un/structured response with/without streaming
 
-synchronous, unstructured response without streaming (aka a standard chat completion)
 ```python
-messages = 
-
-# run chat completion
+# synchronous, unstructured response without streaming 
+# (aka a standard chat completion
 response = client.chat.completions.create(
     model="gpt-4o",
     messages=[
