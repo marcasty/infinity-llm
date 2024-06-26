@@ -5,18 +5,27 @@ from __future__ import annotations
 import mistralai.client
 import mistralai.async_client as mistralaiasynccli
 import any_llm
-from typing import overload, Any, List, Union, Optional, Callable
+from typing import overload, Any, List, Union, Tuple, Callable
 
 def create_mistral_wrapper(embed_func: Callable):
+    """
+    id='a8b6383ac1764642b624260bb2c678b0' 
+    object='list' 
+    data=[EmbeddingObject(object='embedding', embedding=[-0.00262451171875,...], index=0)], [EmbeddingObject(...)...] model='mistral-embed' 
+    usage=UsageInfo(prompt_tokens=13, total_tokens=13, completion_tokens=0)
+    """
+
     def wrapper(
         input: Union[str, List[str]],
         model: str,
         **kwargs: Any
-    ) -> List[List[float]]:
+    ) -> Tuple[List[List[float]], int]:
         if isinstance(input, str):
             input = [input]
 
-        return embed_func(input=input, model=model, **kwargs)
+        response = embed_func(input=input, model=model, **kwargs)
+        embed_dict = dict(sorted({d.index: d.embedding for d in response.data}.items()))
+        return list(embed_dict.values()), response.usage.total_tokens
     return wrapper
 
 @overload

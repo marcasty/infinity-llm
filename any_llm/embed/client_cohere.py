@@ -7,18 +7,27 @@ from typing_extensions import Callable
 import any_llm
 
 def create_cohere_wrapper(embed_func: Callable):
+    """
+    id='f0d20803-71b8-412c-8f89-17907ed2da51' 
+    embeddings=[[0.023345947, ...]] 
+    texts=['this is an example sentence to embed using cohere.'] 
+    meta=ApiMeta(api_version=ApiMetaApiVersion(version='1', is_deprecated=None, is_experimental=None), billed_units=ApiMetaBilledUnits(input_tokens=13.0, output_tokens=None, search_units=None, classifications=None), tokens=None, warnings=[]) 
+    response_type='embeddings_floats'
+    """
+
     def wrapper(
         input: Union[str, List[str]],
         model: str,
         input_type: str,
         embedding_types: Optional[str] = None,
         **kwargs: Any
-    ) -> List[List[float]]:
+    ) -> Tuple[List[List[float]], int]:
         if isinstance(input, str):
             input = [input]
         assert len(input) <= 96, "Cohere can only embed up to 96 texts at a time"
 
-        return embed_func(texts=input, model=model, input_type=input_type, embedding_types=embedding_types, **kwargs)
+        response = embed_func(texts=input, model=model, input_type=input_type, embedding_types=embedding_types, **kwargs)
+        return response.embeddings, int(response.meta.billed_units.input_tokens)
     return wrapper
 
 @overload

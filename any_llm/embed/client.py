@@ -5,7 +5,7 @@ from __future__ import annotations
 import openai
 from openai.types.embedding import Embedding
 
-from typing import Any, Callable, List, Union, overload
+from typing import Any, Callable, List, Union, overload, Tuple
 from typing_extensions import Self
 from any_llm.utils import Provider, get_provider
 from collections.abc import Awaitable
@@ -105,6 +105,26 @@ def embed_from_openai(
     pass
 
 
+def create_openai_wrapper(embed_func: Callable):
+    """
+    CreateEmbeddingResponse(data=[Embedding(embedding=[-0.02307623252272606,...], index=0, object='embedding')], 
+    model='text-embedding-ada-002', 
+    object='list', 
+    usage=Usage(prompt_tokens=11, total_tokens=11))
+    """
+
+    def wrapper(
+        input: Union[str, List[str]],
+        model: str,
+        **kwargs: Any
+    ) -> Tuple[List[List[float]], int]:
+
+        response = embed_func(input=input, model=model, **kwargs)
+        embed_dict = dict(sorted({d.index: d.embedding for d in response.data}.items()))
+        return list(embed_dict.values()), response.usage.total_tokens
+    return wrapper
+
+
 def embed_from_openai(
     client: openai.OpenAI | openai.AsyncOpenAI,
     **kwargs: Any,
@@ -125,18 +145,22 @@ def embed_from_openai(
             stacklevel=2,
         )
     
+    wrapped_embed = create_openai_wrapper(client.embeddings.create)
+
     if isinstance(client, openai.OpenAI):
         return AnyEmbedder(
             client=client,
-            create=client.embeddings.create,
+            create=wrapped_embed,
             provider=provider,
             **kwargs,
         )
 
-    if isinstance(client, openai.AsyncOpenAI):
-        return AsyncAnyEmbedder(
-            client=client,
-            create=client.embeddings.create,
-            provider=provider,
-            **kwargs,
-        )
+    async def async_wrapped_embed(*args, **kwargs):
+        return await wrapped_embed(*args, **kwargs)
+
+    return AsyncAnyEmbedder(
+        client=client,
+        create=async_wrapped_embed,
+        provider=provider,
+        **kwargs,
+    )

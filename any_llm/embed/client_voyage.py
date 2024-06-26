@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import voyageai
 import any_llm
-from typing import overload, Any, List, Optional, Union
+from typing import overload, Any, List, Optional, Union, Tuple
 
 def create_voyage_wrapper(embed_func):
     def wrapper(
@@ -12,11 +12,12 @@ def create_voyage_wrapper(embed_func):
         model: str,
         input_type: Optional[str] = None,
         truncation: Optional[str] = None,
-    ) -> List[List[float]]:
+    ) -> Tuple[List[List[float]], int]:
         
         assert len(input) <= 128, "Voyage can only embed up to 128 texts at a time"
         
-        return embed_func(texts=input, model=model, input_type=input_type, truncation=truncation)
+        response = embed_func(texts=input, model=model, input_type=input_type, truncation=truncation)
+        return response.embeddings, response.total_tokens
     return wrapper
 
 @overload

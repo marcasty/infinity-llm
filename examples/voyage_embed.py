@@ -8,8 +8,8 @@ client = embed_from_any(Provider.VOYAGE)
 text = "This is an example sentence to embed using Voyage."
 
 # Get the embedding
-embedding = client.create(input=text, model="voyage-law-2")
+embeddings, total_tokens = client.create(input=text, model="voyage-law-2")
 
-print(f"Number of Embeddings: {len(embedding.embeddings)}")
-print(f"Embedding dimension: {len(embedding.embeddings[0])}")
-print(f"Usage: {embedding.total_tokens}")
+print(f"Number of Embeddings: {len(embeddings)}")
+print(f"Embedding dimension: {len(embeddings[0])}")
+print(f"Usage: {total_tokens}")
