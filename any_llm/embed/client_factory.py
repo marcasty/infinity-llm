@@ -4,7 +4,7 @@ from openai import OpenAI, AsyncOpenAI
 import cohere
 from mistralai.client import MistralClient
 from mistralai.async_client import MistralAsyncClient
-from voyageai import Client, AsyncClient
+import voyageai
 
 import any_llm
 from any_llm.embed import AnyEmbedder, AsyncAnyEmbedder
@@ -13,7 +13,7 @@ from any_llm import Provider, get_api_key
 
 def embed_from_any(
     provider: Provider,
-    model_name: str,
+    # model_name: str,
     async_client: bool = False
 ) -> Union[AnyEmbedder, AsyncAnyEmbedder]:
     """
@@ -36,7 +36,7 @@ def embed_from_any(
         raw_client = cohere.AsyncClient(api_key=api_key) if async_client else cohere.Client(api_key=api_key)
         return any_llm.embed_from_cohere(raw_client)
     elif provider == Provider.VOYAGE:
-        raw_client = AsyncClient(api_key=api_key) if async_client else Client(api_key=api_key)
+        raw_client = voyageai.AsyncClient(api_key=api_key) if async_client else voyageai.Client(api_key=api_key)
         return any_llm.embed_from_voyage(raw_client)
     elif provider == Provider.MISTRAL:
         raw_client = MistralAsyncClient(api_key=api_key) if async_client else MistralClient(api_key=api_key)

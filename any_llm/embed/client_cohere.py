@@ -2,23 +2,23 @@
 from __future__ import annotations
 
 import cohere
-from typing import Any, List, Optional, overload
+from typing import Any, List, Optional, overload, Union
 from typing_extensions import Callable
 import any_llm
 
 def create_cohere_wrapper(embed_func: Callable):
     def wrapper(
-        input: List[str],
+        input: Union[str, List[str]],
         model: str,
-        encoding_format: Optional[str] = None,
+        input_type: str,
+        embedding_types: Optional[str] = None,
         **kwargs: Any
     ) -> List[List[float]]:
+        if isinstance(input, str):
+            input = [input]
         assert len(input) <= 96, "Cohere can only embed up to 96 texts at a time"
 
-        if encoding_format:
-            kwargs['embedding_types'] = encoding_format
-
-        return embed_func(texts=input, model=model, **kwargs)
+        return embed_func(texts=input, model=model, input_type=input_type, embedding_types=embedding_types, **kwargs)
     return wrapper
 
 @overload
@@ -54,7 +54,6 @@ def embed_from_cohere(
 
     async def async_wrapped_embed(*args, **kwargs):
         return await wrapped_embed(*args, **kwargs)
-
 
     return any_llm.AsyncAnyEmbedder(
         client=client,

@@ -7,9 +7,8 @@ from openai.types.embedding import Embedding
 
 from typing import Any, Callable, List, Union, overload
 from typing_extensions import Self
-from any_llm.utils import Provider
+from any_llm.utils import Provider, get_provider
 from collections.abc import Awaitable
-from instructor import get_provider
 
 class AnyEmbedder:
     client: Any | None
@@ -31,26 +30,26 @@ class AnyEmbedder:
     @overload
     def create(
         self: AsyncAnyEmbedder,
-        texts: Union[str, List[str]],
+        input: Union[str, List[str]],
         **kwargs: Any,
     ) -> Awaitable[List[Embedding]]: ...
 
     @overload
     def create(
         self: Self,
-        texts: Union[str, List[str]],   
+        input: Union[str, List[str]],   
         **kwargs: Any,
     ) -> List[Embedding]: ...
 
     def create(
         self,
-        texts: Union[str, List[str]],
+        input: Union[str, List[str]],
         **kwargs: Any
     ) -> List[Embedding]:
         kwargs = self.handle_kwargs(kwargs)
         
         return self.create_fn(
-            input=texts,
+            input=input,
             **kwargs
         )
 
@@ -80,13 +79,13 @@ class AsyncAnyEmbedder(AnyEmbedder):
 
     async def create(
         self,
-        texts: Union[str, List[str]],
+        input: Union[str, List[str]],
         **kwargs: Any
     ) -> List[List[float]]:
         kwargs = self.handle_kwargs(kwargs)
 
         return await self.embed_fn(
-            input=texts,
+            input=input,
             **kwargs
         )
     
