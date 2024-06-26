@@ -36,6 +36,7 @@ def from_any(
     model_name: str,
     async_client: bool = False,
     mode: Optional[Mode] = None,
+    max_tokens: Optional[int] = 0,
 ) -> Union[Instructor, AsyncInstructor]:
     """
     Factory function to get the appropriate Instructor-wrapped client for a given model.
@@ -60,16 +61,17 @@ def from_any(
         raw_client = AsyncAnthropic() if async_client else Anthropic()
         return instructor.from_anthropic(raw_client, mode=mode)
     elif provider == Provider.COHERE:
+        assert max_tokens > 0, "max_tokens is required for Cohere"
         raw_client = cohere.AsyncClient() if async_client else cohere.Client()
         return instructor.from_cohere(
-            raw_client, max_tokens=0, model=model_name, mode=mode
+            raw_client, max_tokens=max_tokens, model=model_name, mode=mode
         )
     elif provider == Provider.GROQ:
         raw_client = AsyncGroq(api_key=api_key) if async_client else Groq(api_key=api_key)
         return instructor.from_groq(raw_client, mode=mode)
     elif provider == Provider.MISTRAL:
         raw_client = MistralAsyncClient() if async_client else MistralClient()
-        return instructor.from_openai(create=raw_client.chat, mode=mode)
+        return instructor.from_mistral(raw_client, mode=mode)
     elif provider == Provider.ANYSCALE:
         raw_client = AsyncOpenAI(
             base_url="https://api.endpoints.anyscale.com/v1",
