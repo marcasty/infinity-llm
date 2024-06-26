@@ -134,3 +134,29 @@ def get_api_key(provider: Provider):
         provider in model_to_api_key
     ), f"Provider '{provider}' is not recognized."
     return model_to_api_key[provider]
+
+
+def get_provider(base_url: str) -> Provider:
+    if "anyscale" in str(base_url):
+        return Provider.ANYSCALE
+    elif "together" in str(base_url):
+        return Provider.TOGETHER
+    elif "anthropic" in str(base_url):
+        return Provider.ANTHROPIC
+    elif "groq" in str(base_url):
+        return Provider.GROQ
+    elif "voyage" in str(base_url):
+        return Provider.VOYAGE
+    elif "openai" in str(base_url):
+        return Provider.OPENAI
+    elif "mistral" in str(base_url):
+        return Provider.MISTRAL
+    elif "cohere" in str(base_url):
+        return Provider.COHERE
+    elif "gemini" in str(base_url):
+        return Provider.GEMINI
+    elif "databricks" in str(base_url):
+        return Provider.DATABRICKS
+    elif "vertexai" in str(base_url):
+        return Provider.VERTEXAI
+    return Provider.UNKNOWN
