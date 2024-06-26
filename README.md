@@ -44,8 +44,7 @@ response = client.chat.completions.create(
 
 ## Embeddings/Rerankers
 ```python
-from any_llm import Provider
-from any_llm import embed_from_any
+from any_llm import Provider, embed_from_any
 
 # Create a Cohere embedding client
 client = embed_from_any(Provider.COHERE)
