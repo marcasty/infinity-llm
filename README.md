@@ -20,7 +20,11 @@ All types of chat completions are made easy!
 ```python
 from any_llm import from_any, Provider
 
-client = from_any(provider=Provider.OPENAI, model_name="gpt-4o", async_client=False)
+client = from_any(
+    provider=Provider.OPENAI, 
+    model_name="gpt-4o", 
+    async_client=False
+    )
 ```
 
 2. Choose between a/sync un/structured response with/without streaming
@@ -34,7 +38,7 @@ response = client.chat.completions.create(
         {"role": "system", "content": "You are a friend."},
         {"role": "user", "content": "Tell me about your day."}
     ],
-    response_model=None # set response_model to None for unstructured response
+    response_model=None # No response model means unstructured response
 )
 ```
 
@@ -54,9 +58,9 @@ embeddings, total_tokens = client.create(input=text, model="embed-english-v3.0",
 
 
 print(f"Number of embeddings: {len(embeddings)}")
-# > 1
+# > Number of embeddings: 1
 print(f"Embedding dimension: {len(embeddings[0])}")
-# > 1536
+# > Embedding dimension: 1536
 print(f"Usage: {total_tokens}")
-# > 13
+# > Usage: 13
 ```
