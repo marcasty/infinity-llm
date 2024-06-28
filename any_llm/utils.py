@@ -24,7 +24,7 @@ CohereRerankUsage = namedtuple('CohereUsage', ['search'])
 
 MaxInFlight = namedtuple('MaxInFlight', ['max_in_flight']) # Anyscale rate limit
 RateLimit = namedtuple('RateLimit', ['rpm', 'tpm']) # OpenAI rate limit
-MistralRateLimit = namedtuple('MistralRateLimit', ['tpmin', 'tpmonth']) 
+MistralRateLimit = namedtuple('MistralRateLimit', ['tpm', 'tpmonth']) 
 AnthropicRateLimit = namedtuple('AnthropicRateLimit', ['rpm', 'tpm', 'tpd']) 
 GroqRateLimit = namedtuple('GroqRateLimit', ['rpm', 'tpm', 'tpd']) 
 
