@@ -1,7 +1,7 @@
 from any_llm import Provider, get_api_key, model_mapping
 import cohere  
 import tiktoken
-from voyage import Client as voyage_client
+from voyageai import Client as voyage_client
 
 def get_embed_input_tokens(request_json, provider: Provider) -> int:
     def get_text(inputs):
