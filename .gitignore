@@ -2,3 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Ignore temporary files from examples
+examples/tmp/
