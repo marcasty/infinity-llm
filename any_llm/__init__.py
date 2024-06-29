@@ -6,3 +6,6 @@ from .embed.client_factory import embed_from_any
 from .embed.client_voyage import embed_from_voyage
 from .embed.client_cohere import embed_from_cohere
 from .embed.client_mistral import embed_from_mistral
+
+from .pipeline.utils import Functionality
+from .pipeline.call_core import process_api_requests_from_file
