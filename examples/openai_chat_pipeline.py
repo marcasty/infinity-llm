@@ -29,11 +29,11 @@ async def main():
     prompts = create_chat_prompts(num_prompts)
 
     # Save prompts to JSONL file
-    input_file = "tmp/chat_prompts.jsonl"
+    input_file = "examples/tmp/chat_prompts.jsonl"
     save_prompts_to_jsonl(prompts, input_file)
 
     # Set up parameters for API call
-    output_filepath = "tmp/chat_responses"
+    output_filepath = "examples/tmp/chat_responses"
     provider = Provider.OPENAI
     functionality = Functionality.CHAT
     model_name = "gpt-3.5-turbo"
