@@ -1,7 +1,8 @@
 # any-llm: Use any LLM API
 
 any-llm is a collection of Python tools to make LLM APIs plug-and-play for fast, easy experimentation.
-I use this in my own projects today, but it's still very much a work in progress.
+I use this in my own projects today, but it's still very much a work in progress. I'm trying to strike 
+the balance between simplicity and modularity, so if you have ideas feel free to message me or submit a PR!
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/markycasty?style=social)](https://twitter.com/markycasty)
 
