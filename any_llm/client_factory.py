@@ -67,18 +67,24 @@ def from_any(
             raw_client, max_tokens=max_tokens, model=model_name, mode=mode
         )
     elif provider == Provider.GROQ:
-        raw_client = AsyncGroq(api_key=api_key) if async_client else Groq(api_key=api_key)
+        raw_client = (
+            AsyncGroq(api_key=api_key) if async_client else Groq(api_key=api_key)
+        )
         return instructor.from_groq(raw_client, mode=mode)
     elif provider == Provider.MISTRAL:
         raw_client = MistralAsyncClient() if async_client else MistralClient()
         return instructor.from_mistral(raw_client, mode=mode)
     elif provider == Provider.ANYSCALE:
-        raw_client = AsyncOpenAI(
-            base_url="https://api.endpoints.anyscale.com/v1",
-            api_key=api_key,
-        ) if async_client else OpenAI(
-            base_url="https://api.endpoints.anyscale.com/v1",
-            api_key=api_key,
+        raw_client = (
+            AsyncOpenAI(
+                base_url="https://api.endpoints.anyscale.com/v1",
+                api_key=api_key,
+            )
+            if async_client
+            else OpenAI(
+                base_url="https://api.endpoints.anyscale.com/v1",
+                api_key=api_key,
+            )
         )
         return instructor.from_openai(raw_client, mode=mode)
     else:

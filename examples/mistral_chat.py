@@ -3,9 +3,7 @@ from any_llm import from_any, Provider
 # initialize client
 model_name = "open-mistral-7b"
 client = from_any(provider=Provider.MISTRAL, model_name=model_name)
-messages = [
-    {"role": "user", "content": "Tell me about your day."}
-    ]
+messages = [{"role": "user", "content": "Tell me about your day."}]
 
 # run chat completion
 response = client.chat.completions.create(

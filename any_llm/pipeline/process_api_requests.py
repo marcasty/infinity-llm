@@ -1,8 +1,14 @@
 import json, logging, asyncio, time, aiohttp
 
 from any_llm import model_mapping, Provider, Functionality
-from .utils import task_id_generator_function, APIRequest, StatusTracker, num_tokens_consumed_from_request
+from .utils import (
+    task_id_generator_function,
+    APIRequest,
+    StatusTracker,
+    num_tokens_consumed_from_request,
+)
 from .api_requests import get_request_url, get_request_header
+
 
 async def process_api_requests_from_file(
     requests_filepath: str,
@@ -15,7 +21,9 @@ async def process_api_requests_from_file(
 ):
     # constants
     seconds_to_pause_after_rate_limit_error = 15
-    seconds_to_sleep_each_loop = 0.001 # 1 ms limits max throughput to 1,000 requests per second
+    seconds_to_sleep_each_loop = (
+        0.001  # 1 ms limits max throughput to 1,000 requests per second
+    )
 
     logging.basicConfig(level=logging_level)
     logging.debug(f"Logging initialized at level {logging_level}")
@@ -42,7 +50,7 @@ async def process_api_requests_from_file(
     last_update_time = time.time()
 
     # initialize flags
-    file_not_finished = True # after file is empty, skip reading it
+    file_not_finished = True  # after file is empty, skip reading it
     logging.debug(f"Initialization complete.")
 
     # get request header and url
@@ -59,7 +67,9 @@ async def process_api_requests_from_file(
                 if next_request is None:
                     if not queue_of_requests_to_retry.empty():
                         next_request = queue_of_requests_to_retry.get_nowait()
-                        logging.debug(f"Retrying request {next_request.task_id}: {next_request}")
+                        logging.debug(
+                            f"Retrying request {next_request.task_id}: {next_request}"
+                        )
                     elif file_not_finished:
                         try:
                             # get new request
@@ -67,13 +77,17 @@ async def process_api_requests_from_file(
                             next_request = APIRequest(
                                 task_id=next(task_id_generator),
                                 request_json=request_json,
-                                token_consumption=num_tokens_consumed_from_request(request_json, request_url, provider=provider),
+                                token_consumption=num_tokens_consumed_from_request(
+                                    request_json, request_url, provider=provider
+                                ),
                                 attempts_left=max_attempts,
                                 metadata=request_json.pop("metadata", None),
                             )
                             status_tracker.num_tasks_started += 1
                             status_tracker.num_tasks_in_progress += 1
-                            logging.debug(f"Reading request {next_request.task_id}: {next_request}")
+                            logging.debug(
+                                f"Reading request {next_request.task_id}: {next_request}"
+                            )
                         except StopIteration:
                             # if file runs out, set flag to stop reading it
                             logging.debug("Read file exhausted")
@@ -99,11 +113,15 @@ async def process_api_requests_from_file(
                 can_process_request = False
                 if next_request:
                     if provider == Provider.ANYSCALE:
-                        can_process_request = status_tracker.num_tasks_in_process < max_in_flight
+                        can_process_request = (
+                            status_tracker.num_tasks_in_process < max_in_flight
+                        )
                     else:
                         next_request_tokens = next_request.token_consumption
-                        can_process_request = (available_request_capacity >= 1 and 
-                                               available_token_capacity >= next_request_tokens)
+                        can_process_request = (
+                            available_request_capacity >= 1
+                            and available_token_capacity >= next_request_tokens
+                        )
                 # update counters
                 if can_process_request:
                     if provider != Provider.ANYSCALE:
@@ -146,11 +164,19 @@ async def process_api_requests_from_file(
                         )
                         await asyncio.sleep(remaining_seconds_to_pause)
                         # ^e.g., if pause is 15 seconds and final limit was hit 5 seconds ago
-                        logging.warn(f"Pausing to cool down until {time.ctime(status_tracker.time_of_last_rate_limit_error + seconds_to_pause_after_rate_limit_error)}")
+                        logging.warn(
+                            f"Pausing to cool down until {time.ctime(status_tracker.time_of_last_rate_limit_error + seconds_to_pause_after_rate_limit_error)}"
+                        )
 
         # after finishing, log final status
-        logging.info(f"""Parallel processing complete. Results saved to {save_filepath}""")
+        logging.info(
+            f"""Parallel processing complete. Results saved to {save_filepath}"""
+        )
         if status_tracker.num_tasks_failed > 0:
-            logging.warning(f"{status_tracker.num_tasks_failed} / {status_tracker.num_tasks_started} requests failed. Errors logged to {save_filepath}.")
+            logging.warning(
+                f"{status_tracker.num_tasks_failed} / {status_tracker.num_tasks_started} requests failed. Errors logged to {save_filepath}."
+            )
         if status_tracker.num_rate_limit_errors > 0:
-            logging.warning(f"{status_tracker.num_rate_limit_errors} rate limit errors received. Consider running at a lower rate.")
+            logging.warning(
+                f"{status_tracker.num_rate_limit_errors} rate limit errors received. Consider running at a lower rate."
+            )

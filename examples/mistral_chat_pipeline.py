@@ -9,11 +9,14 @@ def create_chat_prompts(num_prompts, model):
         prompt = {
             "model": model,
             "messages": [
-                {"role": "user", "content": f"Tell me an interesting fact about the number {i+1}."}
+                {
+                    "role": "user",
+                    "content": f"Tell me an interesting fact about the number {i+1}.",
+                }
             ],
             "temperature": 0.7,
             "max_tokens": 1000,
-            "metadata": {"prompt_id": i}
+            "metadata": {"prompt_id": i},
         }
         prompts.append(prompt)
     return prompts
@@ -45,6 +48,7 @@ async def main():
     )
 
     print(f"Processing complete. Responses saved to {output_filepath}")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

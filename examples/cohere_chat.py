@@ -13,6 +13,7 @@ The Beatles were an English rock band formed in Liverpool in 1960. With a line-u
 """
 messages = [{"role": "user", "content": task}]
 
+
 class Person(BaseModel):
     name: str = Field(description="name of the person")
     country_of_origin: str = Field(description="country of origin of the person")
@@ -22,11 +23,10 @@ class Group(BaseModel):
     group_name: str = Field(description="name of the group")
     members: list[Person] = Field(description="list of members in the group")
 
+
 # run chat completion
 response, completion = client.messages.create_with_completion(
-    messages=messages,
-    response_model=Group,
-    temperature=0
+    messages=messages, response_model=Group, temperature=0
 )
 """
 text='```json{   

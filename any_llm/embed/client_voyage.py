@@ -6,6 +6,7 @@ import voyageai
 import any_llm
 from typing import overload, Any, List, Optional, Union, Tuple
 
+
 def create_voyage_wrapper(embed_func):
     def wrapper(
         input: Union[str, List[str]],
@@ -13,12 +14,15 @@ def create_voyage_wrapper(embed_func):
         input_type: Optional[str] = None,
         truncation: Optional[str] = None,
     ) -> Tuple[List[List[float]], int]:
-        
         assert len(input) <= 128, "Voyage can only embed up to 128 texts at a time"
-        
-        response = embed_func(texts=input, model=model, input_type=input_type, truncation=truncation)
+
+        response = embed_func(
+            texts=input, model=model, input_type=input_type, truncation=truncation
+        )
         return response.embeddings, response.total_tokens
+
     return wrapper
+
 
 @overload
 def embed_from_voyage(
@@ -26,17 +30,18 @@ def embed_from_voyage(
     **kwargs: Any,
 ) -> any_llm.AnyEmbedder: ...
 
+
 @overload
 def embed_from_voyage(
     client: voyageai.AsyncClient,
     **kwargs: Any,
 ) -> any_llm.AsyncAnyEmbedder: ...
 
+
 def embed_from_voyage(
     client: voyageai.Client | voyageai.AsyncClient,
     **kwargs: Any,
 ) -> any_llm.AnyEmbedder | any_llm.AsyncAnyEmbedder:
-
     assert isinstance(
         client, (voyageai.Client, voyageai.AsyncClient)
     ), "Client must be an instance of voyageai.Client or voyageai.AsyncClient"
@@ -50,7 +55,7 @@ def embed_from_voyage(
             provider=any_llm.Provider.VOYAGE,
             **kwargs,
         )
-    
+
     async def async_wrapped_embed(*args, **kwargs):
         return await wrapped_embed(*args, **kwargs)
 

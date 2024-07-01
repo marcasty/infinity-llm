@@ -8,7 +8,9 @@ client = embed_from_any(Provider.COHERE)
 text = "This is an example sentence to embed using Cohere."
 
 # Get the embedding
-embeddings, total_tokens = client.create(input=text, model="embed-english-v3.0", input_type="clustering")
+embeddings, total_tokens = client.create(
+    input=text, model="embed-english-v3.0", input_type="clustering"
+)
 
 
 print(f"Number of embeddings: {len(embeddings)}")

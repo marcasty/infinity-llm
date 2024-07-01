@@ -1,17 +1,24 @@
 from any_llm import Provider, get_api_key, Functionality
 
+
 def get_request_header(provider: Provider) -> dict:
     api_key = get_api_key(provider)
     if provider == Provider.ANTHROPIC:
         return {
             "x-api-key": api_key,
             "anthropic-version": "2023-06-01",
-            "content-type": "application/json"
+            "content-type": "application/json",
         }
-    elif provider in [Provider.OPENAI, Provider.MISTRAL, Provider.COHERE, Provider.GROQ, Provider.VOYAGE]:
+    elif provider in [
+        Provider.OPENAI,
+        Provider.MISTRAL,
+        Provider.COHERE,
+        Provider.GROQ,
+        Provider.VOYAGE,
+    ]:
         return {
             "Authorization": f"Bearer {api_key}",
-            "content-type": "application/json"
+            "content-type": "application/json",
         }
 
     else:
@@ -49,4 +56,6 @@ def get_request_url(provider: Provider, functionality: Functionality) -> str:
             raise ValueError("Voyage does not support chat")
         elif functionality == Functionality.EMBEDDING:
             return "https://api.voyageai.com/v1/embeddings"
-    raise ValueError(f"Unsupported provider or functionality: {provider}, {functionality}")
+    raise ValueError(
+        f"Unsupported provider or functionality: {provider}, {functionality}"
+    )
