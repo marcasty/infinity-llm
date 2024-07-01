@@ -3,13 +3,12 @@ from any_llm import Provider, Functionality, process_api_requests_from_file
 from .pipeline_utils import save_prompts_to_jsonl
 
 
-def create_chat_prompts(num_prompts):
+def create_chat_prompts(num_prompts, model):
     prompts = []
     for i in range(num_prompts):
         prompt = {
-            "model": "gpt-3.5-turbo",
+            "model": model,
             "messages": [
-                {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": f"Tell me an interesting fact about the number {i+1}."}
             ],
             "temperature": 0.7,
@@ -23,7 +22,8 @@ def create_chat_prompts(num_prompts):
 async def main():
     # Create chat prompts
     num_prompts = 1000
-    prompts = create_chat_prompts(num_prompts)
+    model = "open-mistral-7b"
+    prompts = create_chat_prompts(num_prompts, model)
 
     # Save prompts to JSONL file
     input_file = "examples/tmp/chat_prompts.jsonl"
@@ -31,9 +31,8 @@ async def main():
 
     # Set up parameters for API call
     output_filepath = "examples/tmp/chat_responses"
-    provider = Provider.OPENAI
+    provider = Provider.MISTRAL
     functionality = Functionality.CHAT
-    model = "gpt-3.5-turbo"
 
     # Process API requests
     await process_api_requests_from_file(
