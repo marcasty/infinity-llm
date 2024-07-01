@@ -9,7 +9,7 @@ async def process_api_requests_from_file(
     save_filepath: str,
     provider: Provider,
     functionality: Functionality,
-    model_name: str,
+    model: str,
     max_attempts: int = 5,
     logging_level: int = logging.INFO,
 ):
@@ -28,14 +28,14 @@ async def process_api_requests_from_file(
 
     # initialize available capacity counts
     if provider == Provider.ANYSCALE:
-        max_in_flight = model_mapping[model_name].limit.max_in_flight
+        max_in_flight = model_mapping[model].limit.max_in_flight
     else:
         # mistral has no RPM rate limit, so use big number
         if provider == Provider.MISTRAL:
             max_requests_per_minute = 1000000000
         else:
-            max_requests_per_minute = model_mapping[model_name].limit.rpm
-        max_tokens_per_minute = model_mapping[model_name].limit.tpm
+            max_requests_per_minute = model_mapping[model].limit.rpm
+        max_tokens_per_minute = model_mapping[model].limit.tpm
         available_request_capacity = max_requests_per_minute
         available_token_capacity = max_tokens_per_minute
 

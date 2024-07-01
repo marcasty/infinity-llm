@@ -8,4 +8,4 @@ from .embed.client_cohere import embed_from_cohere
 from .embed.client_mistral import embed_from_mistral
 
 from .pipeline.utils import Functionality
-from .pipeline.call_core import process_api_requests_from_file
+from .pipeline.process_api_requests import process_api_requests_from_file
