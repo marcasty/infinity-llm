@@ -1,5 +1,5 @@
 # modified from https://github.com/jxnl/instructor/blob/main/instructor/batch.py
-from typing import Literal, Any, Union, TypeVar, Optional
+from typing import Literal, Any, Union, TypeVar, Optional, List
 from collections.abc import Iterable
 from pydantic import BaseModel, Field
 from instructor.process_response import handle_response_model
@@ -24,11 +24,11 @@ class Tool(BaseModel):
 
 
 class RequestBody(BaseModel):
-    model: Union[openai_models, str]
+    model: str
     messages: list[dict[str, Any]]
     max_tokens: int = Field(default=1000)
-    tools: list[Tool]
-    tool_choice: dict[str, Any]
+    tools: Optional[list[Tool]]
+    tool_choice: Optional[dict[str, Any]]
 
 
 class BatchModel(BaseModel):
@@ -49,7 +49,6 @@ class BatchJob:
         
         if url == "/v1/embeddings":
             assert response_model is None, "embedding jobs can't have a response model"
-
 
         with open(file_path) as file:
             res: Union[list[T], list[dict[str, Any]]] = []
@@ -80,7 +79,7 @@ class BatchJob:
             list[list[dict[str, Any]]], Iterable[list[dict[str, Any]]],
             list[str], list[list[str]]
         ],
-        model: Union[openai_models, str],
+        model: str,
         response_model: Optional[type[BaseModel]],
         url: Literal["/v1/chat/completions", "/v1/embeddings"],
         file_path: str,

@@ -35,12 +35,14 @@ def upload_batch_job(client: OpenAI) -> Batch:
         file=open("examples/tmp/batch_requests.jsonl", "rb"),
         purpose="batch"
     )
+    print(f"Uploaded batch file with id: {batch_file.id}")
 
     batch_job: Batch = client.batches.create(
         input_file_id=batch_file.id,
         endpoint="/v1/chat/completions", # /v1/embeddings
         completion_window="24h"
     )
+    print(f"Created batch job with id: {batch_job.id}")
     return batch_job
 
 
@@ -73,5 +75,5 @@ if __name__ == "__main__":
     create_batch_job()
     batch_job = upload_batch_job(client)
     check_status(client, batch_job.id)
-    retrieve_results(client, batch_job.output_file_id, "examples/tmp/batch_job_results.jsonl")
-    parse_results("examples/tmp/batch_job_results.jsonl", PersonInfo)
+    #retrieve_results(client, batch_job.output_file_id, "examples/tmp/batch_job_results.jsonl")
+    #parse_results("examples/tmp/batch_job_results.jsonl", PersonInfo)
