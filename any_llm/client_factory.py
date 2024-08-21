@@ -9,7 +9,7 @@ import cohere
 from groq import Groq, AsyncGroq
 from mistralai.client import MistralClient
 from mistralai.async_client import MistralAsyncClient
-
+import google.generativeai as genai
 
 from any_llm import model_mapping, Provider, get_api_key
 
@@ -25,6 +25,7 @@ def get_default_mode(provider: Provider) -> Mode:
         Provider.GROQ: Mode.TOOLS,
         Provider.MISTRAL: Mode.MISTRAL_TOOLS,
         Provider.ANYSCALE: Mode.JSON_SCHEMA,
+        Provider.GEMINI: Mode.GEMINI_JSON,
     }
     assert provider in org_to_mode, f"Provider '{provider.value}' is not recognized."
     return org_to_mode[provider]
@@ -33,7 +34,7 @@ def get_default_mode(provider: Provider) -> Mode:
 # TODO: gemini, together, ollama, llamacpp
 def from_any(
     provider: Provider,
-    model_name: str,
+    model_name: Optional[str] = None,
     async_client: bool = False,
     mode: Optional[Mode] = None,
     max_tokens: Optional[int] = 0,
@@ -62,6 +63,7 @@ def from_any(
         return instructor.from_anthropic(raw_client, mode=mode)
     elif provider == Provider.COHERE:
         assert max_tokens > 0, "max_tokens is required for Cohere"
+        assert model_name, "model is required for Cohere"
         raw_client = cohere.AsyncClient() if async_client else cohere.Client()
         return instructor.from_cohere(
             raw_client, max_tokens=max_tokens, model=model_name, mode=mode
@@ -75,18 +77,15 @@ def from_any(
         raw_client = MistralAsyncClient() if async_client else MistralClient()
         return instructor.from_mistral(raw_client, mode=mode)
     elif provider == Provider.ANYSCALE:
+        base_url = "https://api.endpoints.anyscale.com/v1"
         raw_client = (
-            AsyncOpenAI(
-                base_url="https://api.endpoints.anyscale.com/v1",
-                api_key=api_key,
-            )
-            if async_client
-            else OpenAI(
-                base_url="https://api.endpoints.anyscale.com/v1",
-                api_key=api_key,
-            )
+            AsyncOpenAI(base_url=base_url, api_key=api_key) if async_client else OpenAI(base_url=base_url, api_key=api_key)
         )
         return instructor.from_openai(raw_client, mode=mode)
+    elif provider == Provider.GEMINI:
+        assert model_name, "model is required for Gemini"
+        raw_client = genai.GenerativeModel(model_name=model_name) if async_client else genai.GenerativeModel(model_name=model_name, use_async=True)
+        return instructor.from_gemini(raw_client, mode=mode)
     else:
         raise ValueError(f"Cannot create client for unsupported provider: {provider}")
 
