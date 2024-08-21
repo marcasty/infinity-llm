@@ -102,4 +102,7 @@ def get_chat_urls(model_name: str) -> str:
         "cohere": "https://api.cohere.ai/v1/chat/completions",
         "voyage": "https://api.voyageai.com/v1/embeddings",
     }
-    return model_to_chat_url[org]
+    try:
+        return model_to_chat_url[org]
+    except KeyError:
+        raise ValueError(f"No chat URL found for organization: {org}")
