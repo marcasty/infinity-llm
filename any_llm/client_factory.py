@@ -31,7 +31,7 @@ def get_default_mode(provider: Provider) -> Mode:
     return org_to_mode[provider]
 
 
-# TODO: gemini, together, ollama, llamacpp
+# TODO: together, ollama, llamacpp
 def from_any(
     provider: Provider,
     model_name: Optional[str] = None,
@@ -69,9 +69,7 @@ def from_any(
             raw_client, max_tokens=max_tokens, model=model_name, mode=mode
         )
     elif provider == Provider.GROQ:
-        raw_client = (
-            AsyncGroq(api_key=api_key) if async_client else Groq(api_key=api_key)
-        )
+        raw_client = AsyncGroq(api_key=api_key) if async_client else Groq(api_key=api_key)
         return instructor.from_groq(raw_client, mode=mode)
     elif provider == Provider.MISTRAL:
         raw_client = MistralAsyncClient() if async_client else MistralClient()
@@ -83,8 +81,8 @@ def from_any(
         )
         return instructor.from_openai(raw_client, mode=mode)
     elif provider == Provider.GEMINI:
-        assert model_name, "model is required for Gemini"
-        raw_client = genai.GenerativeModel(model_name=model_name) if async_client else genai.GenerativeModel(model_name=model_name, use_async=True)
+        assert model_name, "model_name is required for Gemini"
+        raw_client = genai.GenerativeModel(model_name=model_name, use_async=True) if async_client else genai.GenerativeModel(model_name=model_name)
         return instructor.from_gemini(raw_client, mode=mode)
     else:
         raise ValueError(f"Cannot create client for unsupported provider: {provider}")
