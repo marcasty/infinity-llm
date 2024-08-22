@@ -7,9 +7,9 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.9"
+python = "^3.9"
 openai = "^1.42.0"
-pydantic = "2.8"
+pydantic = "2.8.2"
 instructor = "^1.4.0"
 anthropic = "^0.34.1"
 cohere = "^5.8.1"
