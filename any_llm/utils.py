@@ -28,6 +28,7 @@ MaxInFlight = namedtuple("MaxInFlight", ["max_in_flight"])  # Anyscale rate limi
 RateLimit = namedtuple("RateLimit", ["rpm", "tpm"])  # OpenAI rate limit
 MistralRateLimit = namedtuple("MistralRateLimit", ["tpm", "tpmonth"])
 AnthropicRateLimit = namedtuple("AnthropicRateLimit", ["rpm", "tpm", "tpd"])
+GeminiRateLimit = namedtuple("GeminiRateLimit", ["rpm", "tpm", "rpd"])
 GroqRateLimit = namedtuple("GroqRateLimit", ["rpm", "tpm", "tpd"])
 
 
@@ -267,25 +268,12 @@ model_mapping: Dict[str, ModelSpec] = {
         ChatUsage(0.5 * 1e-6, 1.5 * 1e-6),
         RateLimit(10000, 2147483647),
     ),
-    # "command": ModelSpec(Provider.COHERE, 4000, ChatUsage(2*1e-3), RateLimit(10000, 2147483647)),
-    # "command-nightly": ModelSpec(Provider.COHERE, 128000, ChatUsage(2*1e-3), RateLimit(10000, 2147483647)),
-    # "command-light": ModelSpec(Provider.COHERE, 4000, ChatUsage(2*1e-3), RateLimit(10000, 2147483647)),
-    # "command-light-nightly": ModelSpec(Provider.COHERE, 4000, ChatUsage(2*1e-3), RateLimit(10000, 2147483647)),
     "embed-english-v3.0": ModelSpec(
         Provider.COHERE, 512, EmbedUsage(0.1 * 1e-6), RateLimit(10000, 2147483647)
     ),
-    # "embed-english-light-v3.0": ModelSpec(Provider.COHERE, 512, EmbedUsage(0.00002*1e-3), RateLimit(10000, 2147483647)),
-    # "embed-multilingual-v3.0": ModelSpec(Provider.COHERE, 512, EmbedUsage(0.00002*1e-3), RateLimit(10000, 2147483647)),
-    # "embed-multilingual-light-v3.0": ModelSpec(Provider.COHERE, 512, EmbedUsage(0.00002*1e-3), RateLimit(10000, 2147483647)),
-    # "embed-english-v2.0": ModelSpec(Provider.COHERE, 512, EmbedUsage(0.00002*1e-3), RateLimit(10000, 2147483647)),
-    # "embed-english-light-v2.0": ModelSpec(Provider.COHERE, 512, EmbedUsage(0.00002*1e-3), RateLimit(10000, 2147483647)),
-    # "embed-multilingual-v2.0": ModelSpec(Provider.COHERE, 512, EmbedUsage(0.00002*1e-3), RateLimit(10000, 2147483647)),
     "rerank-english-v3.0": ModelSpec(
         Provider.COHERE, 512, CohereRerankUsage(2 * 1e-3), RateLimit(10000, 2147483647)
     ),
-    # "rerank-multilingual-v3.0": ModelSpec(Provider.COHERE, 512, CohereRerankUsage(0.00002*1e-3), RateLimit(10000, 2147483647)),
-    # "rerank-english-v2.0": ModelSpec(Provider.COHERE, 512, CohereRerankUsage(0.00002*1e-3), RateLimit(10000, 2147483647)),
-    # "rerank-multilingual-v2.0": ModelSpec(Provider.COHERE, 512, CohereRerankUsage(0.00002*1e-3), RateLimit(10000, 2147483647)),
     # voyage
     "voyage-large-2-instruct": ModelSpec(
         Provider.VOYAGE, 1600, EmbedUsage(0.12 * 1e-6), RateLimit(300, 1000000)
@@ -314,6 +302,11 @@ model_mapping: Dict[str, ModelSpec] = {
     "rerank-lite-1": ModelSpec(
         Provider.VOYAGE, 4000, CohereRerankUsage(0.02 * 1e-6), RateLimit(100, 2000000)
     ),
+    # gemini
+    "models/gemini-1.5-pro": ModelSpec(Provider.GEMINI, 2097152, ChatUsage(3.5*1e-6, 10.5*1e-6), RateLimit(360, 4000000)),
+    "models/gemini-1.5-flash": ModelSpec(Provider.GEMINI, 1048576, ChatUsage(0.075*1e-6, 0.3*1e-6), RateLimit(1000, 4000000)),
+    "models/gemini-1.0-pro": ModelSpec(Provider.GEMINI, 2097152, ChatUsage(0.5*1e-6, 1.5*1e-6), GeminiRateLimit(360, 120000, 300000)),
+    "models/text-embedding-004": ModelSpec(Provider.GEMINI, 2048, EmbedUsage(0.00001 * 1e-6), RateLimit(100000000, 1500)), # no tpm rate limit
 }
 
 
@@ -329,6 +322,7 @@ def get_api_key(provider: Provider):
         Provider.VOYAGE: os.getenv("VOYAGE_API_KEY"),
         Provider.GROQ: os.getenv("GROQ_API_KEY"),
         Provider.MISTRAL: os.getenv("MISTRAL_API_KEY"),
+        Provider.GEMINI: os.getenv("GOOGLE_API_KEY"),
     }
     assert provider in model_to_api_key, f"Provider '{provider}' is not recognized."
     return model_to_api_key[provider]
