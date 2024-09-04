@@ -19,7 +19,7 @@ All types of chat completions are made easy!
 
 1. Make a client
 ```python
-from any_llm import from_any, Provider
+from infinity_llm import from_any, Provider
 
 client = from_any(
     provider=Provider.OPENAI, 
@@ -45,7 +45,7 @@ response = client.chat.completions.create(
 
 ## Embeddings/Rerankers
 ```python
-from any_llm import Provider, embed_from_any
+from infinity_llm import Provider, embed_from_any
 
 # Create a Cohere embedding client
 client = embed_from_any(Provider.COHERE)
