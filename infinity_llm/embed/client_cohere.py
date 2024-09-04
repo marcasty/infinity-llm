@@ -4,7 +4,7 @@ from __future__ import annotations
 import cohere
 from typing import Any, List, Optional, overload, Union
 from typing_extensions import Callable
-import any_llm
+import infinity_llm
 
 
 def create_cohere_wrapper(embed_func: Callable):
@@ -43,14 +43,14 @@ def create_cohere_wrapper(embed_func: Callable):
 def embed_from_cohere(
     client: cohere.Client,
     **kwargs: Any,
-) -> any_llm.AnyEmbedder: ...
+) -> infinity_llm.AnyEmbedder: ...
 
 
 @overload
 def embed_from_cohere(
     client: cohere.AsyncClient,
     **kwargs: Any,
-) -> any_llm.AsyncAnyEmbedder: ...
+) -> infinity_llm.AsyncAnyEmbedder: ...
 
 
 def embed_from_cohere(
@@ -64,19 +64,19 @@ def embed_from_cohere(
     wrapped_embed = create_cohere_wrapper(client.embed)
 
     if isinstance(client, cohere.Client):
-        return any_llm.AnyEmbedder(
+        return infinity_llm.AnyEmbedder(
             client=client,
             create=wrapped_embed,
-            provider=any_llm.Provider.COHERE,
+            provider=infinity_llm.Provider.COHERE,
             **kwargs,
         )
 
     async def async_wrapped_embed(*args, **kwargs):
         return await wrapped_embed(*args, **kwargs)
 
-    return any_llm.AsyncAnyEmbedder(
+    return infinity_llm.AsyncAnyEmbedder(
         client=client,
         create=async_wrapped_embed,
-        provider=any_llm.Provider.COHERE,
+        provider=infinity_llm.Provider.COHERE,
         **kwargs,
     )

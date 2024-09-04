@@ -8,7 +8,7 @@ from mistral_common.protocol.instruct.messages import UserMessage
 from mistral_common.protocol.instruct.request import ChatCompletionRequest
 from mistral_common.protocol.embedding.request import EmbeddingRequest
 
-from any_llm import Provider, get_api_key, model_mapping
+from infinity_llm import Provider, get_api_key, model_mapping
 
 
 def tokenize_openai(model: str, text: str) -> List[str]:

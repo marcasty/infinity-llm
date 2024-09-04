@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "any-llm"
+name = "infinity-llm"
 version = "0.1.0"
 description = "use any llm api in a plug-and-play fashion"
 authors = ["marcasty <markacastellano2@gmail.com>"]

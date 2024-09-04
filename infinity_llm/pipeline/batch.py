@@ -6,7 +6,7 @@ from instructor.process_response import handle_response_model
 import uuid
 import json
 
-from any_llm import model_mapping, Provider
+from infinity_llm import model_mapping, Provider
 
 T = TypeVar("T", bound=BaseModel)
 

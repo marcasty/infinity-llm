@@ -1,4 +1,4 @@
-from any_llm import Provider, get_api_key, Functionality
+from infinity_llm import Provider, get_api_key, Functionality
 
 
 def get_request_header(provider: Provider) -> dict:

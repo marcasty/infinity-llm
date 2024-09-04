@@ -7,7 +7,7 @@ from openai.types.embedding import Embedding
 
 from typing import Any, Callable, List, Union, overload, Tuple
 from typing_extensions import Self
-from any_llm.utils import Provider, get_provider
+from infinity_llm.utils import Provider, get_provider
 from collections.abc import Awaitable
 
 

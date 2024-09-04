@@ -11,7 +11,7 @@ from mistralai.client import MistralClient
 from mistralai.async_client import MistralAsyncClient
 import google.generativeai as genai
 
-from any_llm import model_mapping, Provider, get_api_key
+from infinity_llm import model_mapping, Provider, get_api_key
 
 
 def get_default_mode(provider: Provider) -> Mode:

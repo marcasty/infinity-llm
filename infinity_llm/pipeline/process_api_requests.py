@@ -1,6 +1,6 @@
 import json, logging, asyncio, time, aiohttp
 
-from any_llm import model_mapping, Provider, Functionality
+from infinity_llm import model_mapping, Provider, Functionality
 from .utils import (
     task_id_generator_function,
     APIRequest,

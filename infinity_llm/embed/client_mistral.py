@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import mistralai.client
 import mistralai.async_client as mistralaiasynccli
-import any_llm
+import infinity_llm
 from typing import overload, Any, List, Union, Tuple, Callable
 
 
@@ -33,20 +33,20 @@ def create_mistral_wrapper(embed_func: Callable):
 def embed_from_mistral(
     client: mistralai.client.MistralClient,
     **kwargs: Any,
-) -> any_llm.AnyEmbedder: ...
+) -> infinity_llm.AnyEmbedder: ...
 
 
 @overload
 def embed_from_mistral(
     client: mistralaiasynccli.MistralAsyncClient,
     **kwargs: Any,
-) -> any_llm.AsyncAnyEmbedder: ...
+) -> infinity_llm.AsyncAnyEmbedder: ...
 
 
 def embed_from_mistral(
     client: mistralai.client.MistralClient | mistralaiasynccli.MistralAsyncClient,
     **kwargs: Any,
-) -> any_llm.AnyEmbedder | any_llm.AsyncAnyEmbedder:
+) -> infinity_llm.AnyEmbedder | infinity_llm.AsyncAnyEmbedder:
     assert isinstance(
         client, (mistralai.client.MistralClient, mistralaiasynccli.MistralAsyncClient)
     ), "Client must be an instance of mistralai.client.MistralClient or mistralai.async_cli.MistralAsyncClient"
@@ -54,19 +54,19 @@ def embed_from_mistral(
     wrapped_embed = create_mistral_wrapper(client.embeddings)
 
     if isinstance(client, mistralai.client.MistralClient):
-        return any_llm.AnyEmbedder(
+        return infinity_llm.AnyEmbedder(
             client=client,
             create=wrapped_embed,
-            provider=any_llm.Provider.MISTRAL,
+            provider=infinity_llm.Provider.MISTRAL,
             **kwargs,
         )
 
     async def async_wrapped_embed(*args, **kwargs):
         return await wrapped_embed(*args, **kwargs)
 
-    return any_llm.AsyncAnyEmbedder(
+    return infinity_llm.AsyncAnyEmbedder(
         client=client,
         create=async_wrapped_embed,
-        provider=any_llm.Provider.MISTRAL,
+        provider=infinity_llm.Provider.MISTRAL,
         **kwargs,
     )

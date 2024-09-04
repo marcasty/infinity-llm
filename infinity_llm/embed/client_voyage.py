@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import voyageai
-import any_llm
+import infinity_llm
 from typing import overload, Any, List, Optional, Union, Tuple
 
 
@@ -28,20 +28,20 @@ def create_voyage_wrapper(embed_func):
 def embed_from_voyage(
     client: voyageai.Client,
     **kwargs: Any,
-) -> any_llm.AnyEmbedder: ...
+) -> infinity_llm.AnyEmbedder: ...
 
 
 @overload
 def embed_from_voyage(
     client: voyageai.AsyncClient,
     **kwargs: Any,
-) -> any_llm.AsyncAnyEmbedder: ...
+) -> infinity_llm.AsyncAnyEmbedder: ...
 
 
 def embed_from_voyage(
     client: voyageai.Client | voyageai.AsyncClient,
     **kwargs: Any,
-) -> any_llm.AnyEmbedder | any_llm.AsyncAnyEmbedder:
+) -> infinity_llm.AnyEmbedder | infinity_llm.AsyncAnyEmbedder:
     assert isinstance(
         client, (voyageai.Client, voyageai.AsyncClient)
     ), "Client must be an instance of voyageai.Client or voyageai.AsyncClient"
@@ -49,19 +49,19 @@ def embed_from_voyage(
     wrapped_embed = create_voyage_wrapper(client.embed)
 
     if isinstance(client, voyageai.Client):
-        return any_llm.AnyEmbedder(
+        return infinity_llm.AnyEmbedder(
             client=client,
             create=wrapped_embed,
-            provider=any_llm.Provider.VOYAGE,
+            provider=infinity_llm.Provider.VOYAGE,
             **kwargs,
         )
 
     async def async_wrapped_embed(*args, **kwargs):
         return await wrapped_embed(*args, **kwargs)
 
-    return any_llm.AsyncAnyEmbedder(
+    return infinity_llm.AsyncAnyEmbedder(
         client=client,
         create=async_wrapped_embed,
-        provider=any_llm.Provider.VOYAGE,
+        provider=infinity_llm.Provider.VOYAGE,
         **kwargs,
     )

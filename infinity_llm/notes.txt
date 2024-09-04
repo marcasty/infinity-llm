@@ -20,7 +20,7 @@ specify sync/async
 # workflows
 
     # Chat as needed
-    client = from_any_llm(provider, model_name, async_client, mode)
+    client = from_infinity_llm(provider, model_name, async_client, mode)
         client.chat.completions.create_with_completion() # structured
         client.chat.completions.create() # unstructured
     client = from_any_embedder(provider, model_name, async_client)
@@ -29,7 +29,7 @@ specify sync/async
         client.rerank.create()
     
     # pipeline process
-    client = from_any_llm / from_any_embedder
+    client = from_infinity_llm / from_any_embedder
         client.chat.completions.append_to_pipeline() # run in loop; need to pass save directory and messages
     
     # batch (supported in instructor)

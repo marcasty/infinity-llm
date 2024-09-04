@@ -1,7 +1,7 @@
 import json, os, logging, aiohttp, asyncio, time
 from dataclasses import dataclass, field
 from .tokenize import get_chat_prompt_tokens, get_embed_input_tokens
-from any_llm import Provider
+from infinity_llm import Provider
 from enum import Enum
 
 
